@@ -11,8 +11,8 @@ const createProject = async (req, res) => {
 };
 
 const getProjects = async (req, res) => {
-  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-  const limit = Math.max(parseInt(req.query.limit, 10) || 10, 1);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
   const [projects, total] = await Promise.all([

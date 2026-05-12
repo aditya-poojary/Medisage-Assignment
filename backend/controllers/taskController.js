@@ -27,8 +27,16 @@ const getTasksForProject = async (req, res) => {
     return res.status(404).json({ message: "Project not found" });
   }
 
-  const tasks = await Task.find({ project_id: req.params.project_id }).sort({
-    createdAt: -1,
+  const status = req.query.status;
+  const sort = req.query.sort;
+  const filter = { project_id: req.params.project_id };
+
+  if (status) {
+    filter.status = status;
+  }
+
+  const tasks = await Task.find(filter).sort({
+    due_date: sort === "asc" ? 1 : -1,
   });
 
   return res.status(200).json(tasks);

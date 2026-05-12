@@ -63,7 +63,11 @@ router.post(
 
 router.get(
   "/:project_id/tasks",
-  [param("project_id").isMongoId()],
+  [
+    param("project_id").isMongoId(),
+    query("status").optional().isIn(["todo", "in-progress", "done"]),
+    query("sort").optional().isIn(["asc", "desc"]),
+  ],
   handleValidation,
   getTasksForProject
 );
