@@ -16,6 +16,12 @@ app.use(express.json());
 app.use("/projects", projectRoutes);
 app.use("/tasks", taskRoutes);
 
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    message: err.message,
+  });
+});
+
 const startServer = async () => {
   if (!process.env.MONGO_URI) {
     console.error("MONGO_URI is missing in environment variables.");
