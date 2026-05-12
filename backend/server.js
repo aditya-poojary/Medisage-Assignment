@@ -2,11 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const projectRoutes = require("./routes/projectRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 
@@ -22,13 +23,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-const startServer = async () => {
+const connectDB = async () => {
   if (!process.env.MONGO_URI) {
-    console.error("MONGO_URI is missing in environment variables.");
-    process.exit(1);
+    throw new Error("MONGO_URI is missing in environment variables.");
   }
 
-  await mongoose.connect(process.env.MONGO_URI);
+  return mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => {
+      console.log(err);
+      throw err;
+    });
+};
+
+const startServer = async () => {
+  await connectDB();
   const port = process.env.PORT || 5000;
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
